@@ -190,7 +190,7 @@ sequenceDiagram
 
 ### 3.2 Three-Level Metacognitive Processing Loop (`MetacognitiveProcessingLoop`)
 
-``````mermaid
+```mermaid
 flowchart LR
     subgraph L1["Level 1: Deterministic Monitoring (6D)"]
         VEC["compute_state_vector()<br/>Compute vector m_t in [0,1]^6<br/>(Filter: exclude memory_type='meta')"]
@@ -213,7 +213,6 @@ flowchart LR
     ANOM -->|No| REG
     N_OBS --> REG
     REG -->|Modulates behavior in subsequent turns| VEC
-```
 ```
 
 * **Level 1 (`compute_state_vector`):** Computes $\mathbf{m}_t = [v_{\text{VAD}}, r_{\text{spec}}, r_{\text{refl}}, s_{\text{belief}}, g_{\text{starv}}, f_{\text{env}}]^T \in [0,1]^6$ strictly from deterministic telemetry.
