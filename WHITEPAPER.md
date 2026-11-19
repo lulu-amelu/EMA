@@ -154,7 +154,8 @@ flowchart LR
   2. **Epistemic Curiosity (`WebKnowledgeTool.execute`):** Queries **Open-Meteo** or **Wikipedia** when local documents lack coverage (`RESOLVED_VIA_WEB_SEARCH`).
   3. **Observer-Supervised Cautious Synthesis:** Fuses top Qdrant vectors (excluding `memory_type="meta"`) with Neo4j graph paths (`SYNTHESIZED_WITH_NEO4J_AND_QDRANT`).
 
-```sequenceDiagram
+``````mermaid
+sequenceDiagram
     actor User
     participant Orch as NaturalLearningOrchestrator
     participant ToM as TheoryOfMindEngine
@@ -185,10 +186,12 @@ flowchart LR
     end
     Orch->>MPL: run_cycle(trigger="turn_query")
 ```
+```
 
 ### 3.2 Three-Level Metacognitive Processing Loop (`MetacognitiveProcessingLoop`)
 
-```flowchart LR
+``````mermaid
+flowchart LR
     subgraph L1["Level 1: Deterministic Monitoring (6D)"]
         VEC["compute_state_vector()<br/>Compute vector m_t in [0,1]^6<br/>(Filter: exclude memory_type='meta')"]
         TS[("TimescaleDB<br/>meta_telemetry")]
@@ -210,6 +213,7 @@ flowchart LR
     ANOM -->|No| REG
     N_OBS --> REG
     REG -->|Modulates behavior in subsequent turns| VEC
+```
 ```
 
 * **Level 1 (`compute_state_vector`):** Computes $\mathbf{m}_t = [v_{\text{VAD}}, r_{\text{spec}}, r_{\text{refl}}, s_{\text{belief}}, g_{\text{starv}}, f_{\text{env}}]^T \in [0,1]^6$ strictly from deterministic telemetry.
