@@ -1,6 +1,6 @@
 # EMA v3.4: Neuro-Symbolic Cognitive Architecture with Homeostatic Regulation, Closed-Loop Metacognition (MPL), and Theory of Mind
 
-**Authors:** EMA Architecture Team  
+**Authors:** Lulu Amelu  
 **Version:** 3.4 (Architectural, Engineering & Neurobiological Specification Release)  
 **Date:** November 2026  
 **License:** Apache License 2.0  
