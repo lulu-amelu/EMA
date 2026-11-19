@@ -186,7 +186,6 @@ sequenceDiagram
     end
     Orch->>MPL: run_cycle(trigger="turn_query")
 ```
-```
 
 ### 3.2 Three-Level Metacognitive Processing Loop (`MetacognitiveProcessingLoop`)
 
