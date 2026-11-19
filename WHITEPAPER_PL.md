@@ -1,6 +1,6 @@
 # EMA v3.4: Neuro-Symboliczna Architektura Poznawcza z Regulacją Homeostatyczną, Zamkniętą Pętlą Metapoznawczą (MPL) i Teorią Umysłu
 
-**Autorzy:** EMA Architecture Team  
+**Autorzy:** Lulu Amelu  
 **Wersja:** 3.4 (Wydanie Specyfikacji Architektonicznej, Inżynieryjnej i Neurobiologicznej)  
 **Data:** Listopad 2026  
 **Licencja:** Apache License 2.0  
