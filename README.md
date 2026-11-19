@@ -1,5 +1,3 @@
-# EMA
-Neuro-Symbolic Cognitive Architecture with Homeostatic Regulation, Closed-Loop Metacognition (MPL), and Theory of Mind
 # EMA v3.4 — Episodic Memory & Metacognitive Agent
 
 [![Architecture](https://shields.io)](./WHITEPAPER.md)
@@ -32,15 +30,92 @@ In typical LLM applications, "self-reflection" is an ephemeral textual illusion 
 ## High-Level System Architecture
 
 ```mermaid
-flowchart LR
-    User([User / CLI / Web UI]) <--> Orch["Cognitive Executive Core<br/>(Theory of Mind + Document Priority)"]
-    Orch <--> Homeo["Homeostasis &<br/>Autonomous Idle Loop (Scratchpad)"]
-    Orch <--> MPL["Metacognitive Loop (MPL)<br/>6D Monitor -> LLM -> TTL Control"]
-    
-    Orch <--> Qdrant[("Qdrant<br/>Vector Search")]
-    Orch <--> Neo4j[("Neo4j<br/>Multi-Hop Graph")]
-    MPL --> Timescale[("TimescaleDB<br/>6D Telemetry")]
-    MPL --> Neo4j
+flowchart TB
+    subgraph IN["1. Ingestion, CLI & Observability Layer"]
+        CLI["Executive CLI (ema/cli.py)<br/>/tom | /cypher | /prod | /meta | /eksport_mpl | /wczytaj | /sen | /ja"]
+        DOC["DocumentIngestor (doc_loader.py)<br/>PDF (page slicing) | DOCX (text+tables) | TXT/MD/CSV | Remote URL"]
+        WEB["Web Dashboard v2.4 (:8050)<br/>Top-N Graph Canvas | Memory Curation | 6D MPL Charts"]
+        EXP["KnowledgeGraphExporter & TTS<br/>JSON | GraphML | MPL CSV (UTF-8 BOM) | SAPI5 FIFO Voice"]
+    end
+
+    subgraph PERC_LAYER["2. Perception, Theory of Mind & 5D Encoding"]
+        CLASS["classify_utterance()<br/>FACT | RESOLUTION | QUERY | is_correction | resolved_entity"]
+        TOM["TheoryOfMindEngine (user_model.py)<br/>observe_turn() -> expertise_level, known_topics, knowledge_gaps, active_goals"]
+        ATT["AttentionGateway (compute_attention_weights)<br/>Dynamic 5D Drawer Routing"]
+        ENC["OllamaEncoders (qwen2.5:7b)<br/>5D Feature & SPO Triple Extraction"]
+    end
+
+    subgraph HIPPO["3. 5-Drawer Hippocampal Memory Complex (MemoryItem)"]
+        D1["1. Semantic Drawer<br/>semantic_vector (128D Cosine)<br/>~ Dentate Gyrus (Pattern Separation)"]
+        D2["2. Graph Drawer<br/>GraphTriple (S-P-O, confidence) & system:self<br/>~ CA3 Field (Pattern Completion)"]
+        D3["3. Episodic Drawer<br/>timestamp, provenance, is_active, superseded_by, decay_factor<br/>~ CA1 Time Cells"]
+        D4["4. Affective Drawer<br/>VAD Coordinates & Cognitive Discomfort<br/>~ Amygdala Salience"]
+        D5["5. Functional Drawer<br/>Operational Utility & Goal Alignment<br/>~ Prefrontal Cortex (vmPFC)"]
+    end
+
+    subgraph EXEC["4. Epistemic Retrieval & Anti-Hallucination Pipeline (process_query)"]
+        PRIO1["Stage 1: Local Document Priority<br/>_find_document_evidence() + find_graph_paths(1..3 hops)<br/>-> [ANSWERED_FROM_LOCAL_DOCUMENTS]"]
+        PRIO2["Stage 2: Epistemic Curiosity Tool<br/>WebKnowledgeTool (Open-Meteo Weather & Wikipedia)<br/>-> [RESOLVED_VIA_WEB_SEARCH]"]
+        CONF_RES["resolve_entity_conflict()<br/>Non-destructive archiving (guarded by DEPRECATION_BRAKE)"]
+        OBS["Doubter & Observer (observer.py)<br/>Contradiction Check & Hypothesis Veto<br/>-> [SYNTHESIZED_WITH_NEO4J_AND_QDRANT]"]
+    end
+
+    subgraph AUTO["5. Autonomous Stream of Consciousness, Homeostasis & Sleep"]
+        HOMEO["HomeostasisEngine<br/>Curiosity (C) | Cognitive Discomfort (D) | Fatigue (F)"]
+        SCRATCH["_filter_via_inner_scratchpad()<br/>Silent Monologue Filter + doc:* Isolation (_is_meaningful_memory)"]
+        WIKI_BG["_autonomous_wiki_verification()<br/>Background check of triples (conf < 0.91 -> 0.92)"]
+        SLEEP["sleep_phase() & Auto-Sleep (F >= 0.95)<br/>Self-Error Audit | Rule Crystallization | Fatigue Reset (F -> 0.05)"]
+    end
+
+    subgraph MPL_SYS["6. Closed-Loop Metacognition (MPL) & Path B Persistence"]
+        MPL1["MPL Level 1: compute_state_vector() (6D)<br/>v_VAD | r_spec | r_refl | s_belief | g_starv | f_env"]
+        MPL2["MPL Level 2: _run_llm_interpretation()<br/>4-Point Anomaly Diagnosis -> :MetaObservation"]
+        MPL3["MPL Level 3: _apply_regulations() (TTL Hysteresis)<br/>CAUTIOUS_TONE | DEPRECATION_BRAKE | GOAL_PRIORITY | VAD_ATTRIBUTION_FILTER"]
+        SCHED["APScheduler (120s Periodic Trigger)"]
+        QDRANT[("Qdrant (:6333)<br/>ema_memories (exclude_meta)")]
+        NEO4J[("Neo4j (:7687)<br/>:Entity | system:self | :MetaObservation | :UserModel")]
+        TIMESCALE[("TimescaleDB (:5432)<br/>meta_telemetry Hypertable")]
+        SQLITE[("SQLite (ema_memory.db)<br/>Local Mirror & Fallback")]
+    end
+
+    CLI <--> CLASS
+    DOC -->|Chunks| ENC
+    WEB <--> SQLITE
+    WEB <--> MPL1
+    EXEC --> EXP
+
+    CLASS --> TOM --> ATT --> ENC
+    ENC --> D1 & D2 & D3 & D4 & D5
+
+    D1 <--> QDRANT
+    D2 <--> NEO4J
+    D3 & D4 & D5 <--> SQLITE
+    TOM --> NEO4J
+
+    ATT --> PRIO1
+    PRIO1 -->|No doc match| PRIO2
+    PRIO1 -->|Hit| OBS
+    PRIO2 --> OBS
+    CLASS -->|RESOLUTION| CONF_RES
+    CONF_RES <--> D3
+
+    EXEC <--> HOMEO
+    HOMEO <--> SCRATCH
+    SCRATCH --> WIKI_BG
+    WIKI_BG <--> D2
+    HOMEO -->|F >= 0.95| SLEEP
+    SLEEP <--> D2 & D3
+
+    SCHED --> MPL1
+    EXEC --> MPL1
+    SCRATCH --> MPL1
+    MPL1 --> TIMESCALE
+    MPL1 -->|Anomaly| MPL2 --> NEO4J
+    MPL1 --> MPL3
+    MPL2 --> MPL3
+    MPL3 -->|Modulates| EXEC
+    MPL3 -->|Modulates| SCRATCH
+    MPL3 -->|Guards| CONF_RES
 ```
 
 *(Full architectural diagrams, neurobiological comparisons, sequence flows, and mathematical formulations are detailed in [`WHITEPAPER.md`](./WHITEPAPER.md) and [`WHITEPAPER_PL.md`](./WHITEPAPER_PL.md).)*
