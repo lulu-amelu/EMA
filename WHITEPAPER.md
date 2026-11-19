@@ -154,7 +154,7 @@ flowchart LR
   2. **Epistemic Curiosity (`WebKnowledgeTool.execute`):** Queries **Open-Meteo** or **Wikipedia** when local documents lack coverage (`RESOLVED_VIA_WEB_SEARCH`).
   3. **Observer-Supervised Cautious Synthesis:** Fuses top Qdrant vectors (excluding `memory_type="meta"`) with Neo4j graph paths (`SYNTHESIZED_WITH_NEO4J_AND_QDRANT`).
 
-``````mermaid
+```mermaid
 sequenceDiagram
     actor User
     participant Orch as NaturalLearningOrchestrator
